@@ -73,7 +73,8 @@ if __name__ == '__main__':
  in1 = connDB(host = sys.argv[1], port = sys.argv[2], user = sys.argv[3], password = str(sys.argv[4]), db = sys.argv[5], charset = 'utf8')
  #print in1.excute(in1.connect(),'select * from test;',1)[0]
  for i in range(100):
-  in1.excute(in1.connect(),"insert into test values(1,'zhangsan');".encode('utf8'),1)
-  print i
+  id = i.numerator
+  sql = "insert into test values(" + str(id) + ",'zhangsan');"
+  in1.excute(in1.connect(),sql.encode('utf8'),1)
  in1.disconnect(in1.connect())
  
