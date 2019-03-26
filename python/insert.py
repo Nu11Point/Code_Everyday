@@ -1,4 +1,7 @@
 #!/bin/env python
+#time:2019-03-26 10:55:26
+#auth:victor
+#usage: python insert.py 127.0.0.1 3306 root '' test
 
 import sys
 import MySQLdb
@@ -37,29 +40,29 @@ class connDB:
     host = self.__host,
     port = int(self.__port),
     user = self.__user,
-    password = self.__password,
+    passwd = self.__password,
     db = self.__db,
     charset = self.__charset,
     connect_timeout = 200)
   except Exception, e:
    print "[FAIL][%s] Connect MySQL failed  host:%s,user:%s,port:%s,password:%s,Details:%s" %(time.strftime("%Y-%m-%d %H:%M:%S",time.localtime()),self.__host,self.__user,self.__port,self.__password,e)
-   return None
+   #return None
   return conn
  def disconnect(self,conn):
   if conn:
    conn.close()
    return None
- def excute(self,conn,sql,flag = 0):
+ def excute(self,conn,sql,flag):
   curs = conn.cursor()
   result = None
   try:
    print "[DEBUG] sql: %s" %(sql)
-   result = cursor(sql)
+   result = curs.execute(sql)
    conn.commit()
    if flag:
     result = curs.fetchall()
   except Exception, e:
-   print "[FAIL][%s] Excute sql : %s failed. detail: %s" %(time.strftime("%Y-%m-%d %H:%M:%S"),time.localtime,sql,e)
+   print "[FAIL][%s] Excute sql : %s failed. detail: %s" %(time.strftime("%Y-%m-%d %H:%M:%S",time.localtime()),sql,e)
    curs.close()
    return None
   curs.close()
@@ -68,6 +71,9 @@ class connDB:
   
 if __name__ == '__main__':
  in1 = connDB(host = sys.argv[1], port = sys.argv[2], user = sys.argv[3], password = str(sys.argv[4]), db = sys.argv[5], charset = 'utf8')
- in1.excute(in1.connect(),'select * from test;',0)
- in1.close()
+ #print in1.excute(in1.connect(),'select * from test;',1)[0]
+ for i in range(100):
+  in1.excute(in1.connect(),"insert into test values(1,'zhangsan');".encode('utf8'),1)
+  print i
+ in1.disconnect(in1.connect())
  
